@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  -->
+<mapper namespace="com.buit.his.dao.SelfCheckDao">
+
+    <select id="queryItem" resultType="com.buit.his.response.SelfQueryItemResp">
+        select a.fymc,a.fydw,b.fydj,a.pydm
+        from fee_ylsfxm a,fee_ylsfxmdj b
+        where a.fyxh = b.fyxh and a.zfpb = 0
+    </select>
+
+    <select id="queryMed" resultType="com.buit.his.response.SelfQueryMedResp">
+        SELECT a.ypmc,a.ypgg,a.ypdw,b.lsjg,c.cdmc,a.pydm
+        FROM drugs_typk a,drugs_ypcd b,drugs_cddz c
+        where a.ypxh = b.ypxh and b.ypcd = c.ypcd and a.zfpb = 0
+    </select>
+
+    <select id="queryIm" resultType="com.buit.his.response.SelfQueryImResp">
+        select zyh as zyh,zyhm as zyhm,brxm as xm,(case brxb when 1 then '男' when 2 then '女' else '其他' end) as xb,
+        b.xzmc as xz,c.officename as bq,a.brch as ch
+        from im_hzry a
+        left join pub_brxz b on a.brxz = b.brxz
+        left join dic_kszd c on a.brbq = c.id
+        where a.cypb = 0 and a.zyhm = #{zyhm} and a.brxm = #{brxm}
+    </select>
+
+    <select id="queryImDetail" resultType="com.buit.his.response.SelfQueryImDetailResp">
+        select b.sfmc as lb,a.fymc as xmmc,
+		(case when a.yplx = 0 then "" else c.ypgg end) as gg,
+		a.fydj as dj,a.fysl as sl,a.zjje as je,
+		DATE_FORMAT(a.jfrq,'%Y-%m-%d %H:%i') as rq
+		from im_fee_fymx a
+		left join dic_sfxmlb b on a.fyxm = b.sfxm
+		left join drugs_typk c on a.fyxh = c.ypxh
+		where zyh = #{zyh}
+        <if test="@sqlt.Ognl@isNotEmpty(ksrq) and @sqlt.Ognl@isNotEmpty(jsrq)">
+            and (date_format(a.jfrq, '%Y-%m-%d') &gt;= #{ksrq}
+            and date_format(a.jfrq, '%Y-%m-%d') &lt;= #{jsrq} )
+        </if>
+		order by a.fyxm,a.jfrq
+    </select>
+</mapper>
+

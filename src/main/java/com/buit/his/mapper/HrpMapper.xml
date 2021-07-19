@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  -->
+<mapper namespace="com.buit.his.dao.HrpDao">
+    <insert id="insertHrpLog">
+        insert into hrp_log(JLXH,STATE,MESSAGE)
+        values(#{jlxh},#{state},#{message})
+    </insert>
+
+    <select id="queryFymxByJlxh" resultType="com.buit.his.request.HisCubeBzEjkfPush">
+        SELECT
+        hzry.JGID AS jgid,
+        yljg.HOSPITAL_NAME AS jgname,
+        hzry.BRID AS brbh,
+        hzry.BRXM AS brxm,
+        fymx.QRGH AS sfgh,
+        ( SELECT user.USER_NAME FROM sys_user user WHERE ( user.USER_ID = fymx.QRGH ) ) AS sfname,
+        '2' AS ywlx,
+        fymx.FYBQ AS bmdm,
+        hzry.BRBQ AS ssbq,
+        ( SELECT kszd.OFFICENAME FROM dic_kszd kszd WHERE ( kszd.ID = hzry.BRBQ ) ) AS ssbqmc,
+        hzry.BRKS AS ssks,
+        ( SELECT kszd.OFFICENAME FROM dic_kszd kszd WHERE ( kszd.ID = hzry.BRKS ) ) AS ssksmc,
+        ylsfxm.XMBM AS xmbm,
+        fymx.FYMC AS xmmc,
+        ylsfxm.YYCLGG AS xmgg,
+        ylsfxm.FYDW AS xmdw,
+        abs( fymx.FYSL ) AS xmsysl,
+        ROUND(fymx.FYDJ,2) AS xmdj,
+        ROUND(fymx.ZJJE,2) AS xmsyje,
+        fymx.JFRQ AS xmsysj,
+        ( CASE WHEN ( fymx.FYSL &lt; 0 ) THEN '1' ELSE '0' END ) AS sylx,
+        fymx.JLXH AS lsh,
+        fymx.JLXH AS hisid
+        FROM
+        im_fee_fymx fymx, im_hzry hzry, fee_ylsfxm ylsfxm, dic_yljg yljg
+        WHERE
+        fymx.ZYH = hzry.ZYH
+        AND ylsfxm.FYXH = fymx.FYXH
+        AND yljg.HOSPITAL_ID = hzry.JGID
+        AND ylsfxm.XMLX = '10'
+        AND fymx.JLXH = #{jlxh}
+    </select>
+
+</mapper>

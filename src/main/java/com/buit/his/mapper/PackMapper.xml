@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  -->
+<mapper namespace="com.buit.his.dao.PackDao">
+
+    <select id="queryLxByJlid" resultType="java.util.Map">
+        select jgid,fyfs
+        from phar_fyjl
+        where jlid = #{jlid}
+    </select>
+
+    <insert id="insertPackLog">
+        insert into pack_log(JLID,STATE,MESSAGE)
+        values(#{jlid},#{state},#{message})
+    </insert>
+
+    <select id="queryCountByJlid" resultType="long">
+        SELECT count(*) FROM pack_log
+        where JLID = #{jlid} and state = 1
+    </select>
+
+    <select id="queryMedList" resultType="com.buit.his.request.PackMedSendReqXml">
+        select @rownum:=@rownum+1 AS rp_no,b.*
+        from (select @rownum:=0) a,
+        (SELECT
+                    DATE_FORMAT( SYSDATE( ), '%Y%m%d%H%i%s' ) AS packing_res_no,
+                    d.kssj AS prescription_date_time,
+                    d.LSYZ AS prescription_type_code,
+                    ( CASE WHEN d.LSYZ = 0 THEN "长期" WHEN d.LSYZ = 1 THEN "临时" END ) AS prescription_type_name,
+                    a.jlid AS single_title,
+                    b.LYBQ AS ward_code,
+                    e.officename AS ward_name,
+                    e.PYCODE AS ward_name_pinyin,
+                    b.fyks AS clinic_code,
+                    f.officename AS clinic_name,
+                    f.PYCODE AS clinic_name_pinyin,
+                    "" AS prescription_qrcode,
+                    g.brid AS patient_code,
+                    "" AS patient_qrcode,
+                    g.zyhm AS inpatient_code,
+                    g.brxm AS patient_name,
+                    g.brxb AS gender_type,
+                    DATE_FORMAT( g.csny, '%Y-%m-%d' ) AS birth_date,
+                    g.brch AS inpatient_bed_code,
+                    CONCAT( g.brch, "床" ) AS inpatient_bed_name,
+                    IFNULL(g.lxdz,"") AS patient_address,
+                    "" AS doctor_serial_code,
+                    CONCAT(b.ypxh,"-",b.ypcd) AS medicine_code,
+                    "" AS medicine_host_code,
+                    "" AS medicine_serial_code,
+                    h.ypmc AS medicine_name,
+                    h.pydm AS medicine_name_pinyin,
+                    "1" AS take_type,
+                    h.ypsx AS medicine_form_code,
+                    i.sxmc AS medicine_form_name,
+                    c.sypc AS youhou_code,
+                    j.bzxx AS youhou_name,
+                    j.mrcs AS division_1day,
+                    c.ycsl AS input_quantity,
+                    c.yfdw AS input_unit_code,
+                    c.yfdw AS input_unit_name,
+                    CONCAT( h.ypjl, h.jldw ) AS medicine_standard,
+                    k.ypcd AS firm_id,
+                    k.cdmc AS firm_name,
+                    IFNULL(h.cgh,"") AS rack_no,
+                    IFNULL(h.pzwh,"") AS lot_no,
+                    IFNULL(DATE_FORMAT( b.ypxq, '%Y%m%d' ),"") AS expiration_date,
+                    "1" AS dispense_days,
+                    DATE_FORMAT( SYSDATE( ), '%Y-%m-%d %H:%i:%s' ) AS dispense_start_date,
+                    ( c.ycsl * j.mrcs * 1 ) AS dispensed_total_dose,
+                    (CASE WHEN d.LSYZ = 0 and HOUR(c.qrrq) &gt;= 16 THEN DATE_FORMAT(adddate(c.qrrq,-1), '%Y-%m-%d %H:%i' )
+                    ELSE DATE_FORMAT( c.qrrq, '%Y-%m-%d %H:%i' ) END) AS jiten_time01,
+                    "" AS jiten_comment,
+                    "" AS jiten_qrcode,
+                    l.xmmc AS 'usage',
+                    h.ypjl AS base_once,
+                    d.ycjl AS dose_once,
+                    h.jldw AS dose_units,
+                    h.zxbz AS package_num,
+                    b.ypsl AS apply_num
+                FROM
+                    phar_fyjl a
+                    LEFT JOIN phar_zyfymx b ON a.jlid = b.jlid
+                    LEFT JOIN nis_tj02 c ON b.tjxh = c.jlxh
+                    LEFT JOIN cis_hzyz d ON c.yzxh = d.jlxh
+                    LEFT JOIN dic_kszd e ON e.id = b.LYBQ
+                    LEFT JOIN dic_kszd f ON f.id = b.fyks
+                    LEFT JOIN im_hzry g ON b.zyh = g.zyh
+                    LEFT JOIN drugs_typk h ON b.ypxh = h.ypxh
+                    LEFT JOIN drugs_ypsx i ON h.ypsx = i.ypsx
+                    LEFT JOIN dic_sypc j ON c.sypc = j.pcbm
+                    LEFT JOIN drugs_cddz k ON b.ypcd = k.ypcd
+                    LEFT JOIN im_dic_ypyf l ON d.ypyf = l.ypyf
+            where a.jlid = #{jlid}
+            order by   b.LYBQ,g.brch,c.qrrq) b
+    </select>
+
+</mapper>

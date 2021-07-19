@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  -->
+<mapper namespace="com.buit.mdi.dao.MdiVejkfBatchViewDao">
+
+   	<!-- 查询Hrp物资 -->
+	<select id="queryHighQualityConsumables" resultType="com.buit.mdi.response.HighQualityConsumablesResp">
+		SELECT * from MMIS_HD_TEST.V_EJKFBATCH_VIEW
+		where 1 = 1
+		<if test="@sqlt.Ognl@isNotEmpty(list)">
+			and (HISBMBM || '-' || SFDM) in
+			<foreach collection="list" item="z" open="(" close=")" separator=",">
+				#{z}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="findListByXmbm" resultType="com.buit.mdi.response.HighQualityConsumablesResp">
+		SELECT * from MMIS_HD_TEST.V_EJKFBATCH_VIEW
+		where SFDM = #{xmbm}
+	</select>
+
+</mapper>
+

@@ -1,0 +1,11 @@
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:03 +0800] "GET /mdi-service/doc.html HTTP/1.1" 404 -
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /doc.html HTTP/1.1" 200 780
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /webjars/js/app.b299109b.js HTTP/1.1" 200 351662
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /webjars/css/app.ba351dc1.css HTTP/1.1" 200 617851
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /webjars/js/chunk-vendors.9ff0f717.js HTTP/1.1" 200 4041267
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /swagger-resources HTTP/1.1" 200 243
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:07 +0800] "GET /swagger-resources/configuration/ui HTTP/1.1" 200 462
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:08 +0800] "GET /v2/api-docs?group=%E6%8E%A5%E5%8F%A3 HTTP/1.1" 200 19095
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:27 +0800] "GET /v2/api-docs?group=%E6%8E%A5%E5%8F%A31 HTTP/1.1" 200 1173
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:25:32 +0800] "POST /cishzyz/getDoctorAdviceBrQuery HTTP/1.1" 500 742
+0:0:0:0:0:0:0:1 - - [02/May/2021:22:27:45 +0800] "POST /cishzyz/getDoctorAdviceBrQuery HTTP/1.1" 200 1759
